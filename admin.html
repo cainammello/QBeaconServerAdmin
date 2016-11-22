@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html ng-app="qBeaconAdmin">
+<head>
+
+    <meta charset="utf-8">
+
+	<title>Phone List</title>
+
+    <link rel="stylesheet" href="lib/softMaterial/materialize/css/materialize.css"/>
+    <link rel="stylesheet" href="lib/softMaterial/materialize/fonts/icons/material-icons-google.css"/>
+    <link rel="stylesheet" href="lib/softMaterial/css/soft.css"/>
+    
+	<script type="text/javascript" src="lib/angular/angular.min.js"></script>
+    <script type="text/javascript" src="lib/angular/angular-locale_pt-br.js"></script>
+    <script type="text/javascript" src="lib/angular/angular-messages.min.js"></script>
+    <script type="text/javascript" src="lib/softMaterial/plugins/jquery/js/jquery-2.0.0.min.js"></script>
+    <script type="text/javascript" src="lib/softMaterial/materialize/js/bin/materialize.min.js"></script>
+    <script type="text/javascript" src="lib/softMaterial/js/soft.js"></script>
+
+    <script type="text/javascript" src="js/app.js"></script>
+
+    <script type="text/javascript" src="js/controllers/adminController.js"></script>
+
+    <script type="text/javascript" src="js/services/adminService.js"></script>
+    
+    <script type="text/javascript" src="js/value/apiValue.js"></script>
+    <script type="text/javascript" src="js/config/serialGeneratorConfig.js"></script>
+
+    <script type="text/javascript" src="js/filter/nameFilter.js"></script>
+    <script type="text/javascript" src="js/filter/ellipsisFilter.js"></script>
+    
+    <script type="text/javascript" src="js/directives/cardItemDirective.js"></script>
+
+	<script type="text/javascript">
+
+        $(document).ready(function() {
+			$('select').material_select();
+        });
+
+	</script>
+	
+</head>
+<body ng-controller="adminController">
+
+    <div ng-include="'view/navbar.html'"></div>
+    
+    <div class="ms__main-content ms__main-content-fixed-nav">
+        <div class="row">
+            <div class="col s10 offset-s1">
+                
+                <div class="card purple">
+                    <div class="card-content">
+                        <a class="btn btn-large purple lighten-2 waves-effect waves-light"
+                            ng-click="updateBeacons()">
+                            <i class="material-icons right">update</i>
+                            Atualizar Beacons
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card" ng-repeat="model in models">
+                    <div class="card-content relative">
+                        {{modelsDataCreated}}
+                        <div class="row no-margin">
+                            <div class="col s3">
+                                <span class="bold text-20">{{model | name}}</span>
+                            </div>
+
+                            <div class="col s9 input-field">
+                                <input id="id-{{model}}" type="text" ng-model="modelsDataCreated[model].name">
+                                <label for="id-{{model}}">Nome</label>
+                            </div>
+
+                            <input type="hidden" ng-model="modelsDataCreated[model].key">
+                        </div>
+
+                        <button 
+                            ng-disabled="!modelsDataCreated[model].name.length > 0"
+                            ng-click="saveObject(model, modelsDataCreated[model])"
+                            class="btn-floating btn-large bottom-right waves-effect waves-light">
+                            <i class="material-icons">check</i>
+                        </button>
+
+                    </div>
+                    <div class="card-action grey lighten-3">
+                        
+                        <div class="row no-margin">
+                            <card-item 
+                                class="col s4" ng-repeat="object in modelsData[model] | orderBy:object.key" name="object.name" key="object.key">
+                                
+                                <button 
+                                    ng-click="removeObject(model, object)"
+                                    class="btn-floating z-depth-1-2 waves-effect waves-light">
+                                    <i class="material-icons">delete</i>
+                                </button>
+
+                                <button 
+                                    ng-click="selectObject(model, object)"
+                                    class="btn-floating z-depth-1-2 waves-effect waves-light">
+                                    <i class="material-icons">edit</i>
+                                </button>
+
+                            </card-item>
+                        </div>
+                        
+                    </div>
+                </div>
+
+
+                <div class="card" >
+                    <div class="card-content relative">
+                        <table>
+                            <tbody>
+                                <thead>
+                                    <tr>
+                                        <th>Modelo</th>
+                                        <th>Cheve atualizada</th>
+                                        <th>Data</th>
+                                    </tr>
+                                </thead>
+                                <tr ng-repeat="h in historic | orderBy:timestamp:-1">
+                                    <td>{{h.modelUpdated}}</td>
+                                    <td>{{h.keyUpdated}}</td>
+                                    <td>{{h.timestamp | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
