@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="lib/softMaterial/materialize/css/materialize.css"/>
     <link rel="stylesheet" href="lib/softMaterial/materialize/fonts/icons/material-icons-google.css"/>
     <link rel="stylesheet" href="lib/softMaterial/css/soft.css"/>
+    <link rel="stylesheet" href="css/admin.css"/>
     
 	<script type="text/javascript" src="lib/angular/angular.min.js"></script>
     <script type="text/javascript" src="lib/angular/angular-locale_pt-br.js"></script>
@@ -57,18 +58,75 @@
                         </a>
                     </div>
                 </div>
+                
+                <div class="card">
+                    <div class="card-content">
+                        {{createdEvent}}
+                    </div>
+                    <div class="card-content relative">
+                        <div class="row">
+                            <div class="col s6" ng-repeat="model in models">
+                                <label>{{model | name}}</label>
+                                <select class="browser-default card-input"
+                                    ng-model="createdEvent['key' + (model | name)]">
+                                    
+                                    <option 
+                                        ng-repeat="object in modelsData[model]" value="{{object.key}}">{{object.name}}
+                                    </option>
+                                </select>
+
+                            </div>
+                            
+                            <div class="col s3 input-field">
+                                <input type="text" ng-model="createdEvent.timestampBegin" class="card-input"
+                                placeholder="Começo do evento"/>
+                            </div>
+                            
+                            <div class="col s3 input-field">
+                                <input type="text" ng-model="createdEvent.timestampEnd" class="card-input"
+                                placeholder="Fim do evento"/>
+                            </div>
+                        </div>
+                        
+                        <button 
+                            ng-disabled="!createdEvent"
+                            ng-click="saveEvent('evento', createdEvent)"
+                            class="btn-floating btn-large bottom-right waves-effect waves-light">
+                            <i class="material-icons">check</i>
+                        </button>
+                    </div>
+                    <div class="card-action grey lighten-3">
+                        <card-item 
+                            class="col s4" ng-repeat="event in modelsData[model] | orderBy:object.key" name="object.name" key="object.key">
+
+                            <button 
+                                ng-click="removeObject(model, object)"
+                                class="btn-floating z-depth-1-2 waves-effect waves-light">
+                                <i class="material-icons">delete</i>
+                            </button>
+
+                            <button 
+                                ng-click="selectObject(model, object)"
+                                class="btn-floating z-depth-1-2 waves-effect waves-light">
+                                <i class="material-icons">edit</i>
+                            </button>
+
+                        </card-item>
+                    </div>
+                </div>
 
                 <div class="card" ng-repeat="model in models">
                     <div class="card-content relative">
-                        {{modelsDataCreated}}
-                        <div class="row no-margin">
+                        <div class="row no-margin valign-wrapper">
                             <div class="col s3">
-                                <span class="bold text-20">{{model | name}}</span>
+                                <span class="bold text-24 purple-text">{{model | name}}</span>
                             </div>
 
-                            <div class="col s9 input-field">
-                                <input id="id-{{model}}" type="text" ng-model="modelsDataCreated[model].name">
-                                <label for="id-{{model}}">Nome</label>
+                            <div class="col s9">
+                                <input id="id-{{model}}" type="text" 
+                                    ng-model="modelsDataCreated[model].name"
+                                    placeholder="Nome"
+                                    class="card-input">
                             </div>
 
                             <input type="hidden" ng-model="modelsDataCreated[model].key">

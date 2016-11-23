@@ -1,8 +1,10 @@
 angular.module("qBeaconAdmin").controller("adminController", function($scope, adminService) {
-    $scope.models = ["bloco", "sala"];
+    $scope.models = ["bloco", "sala", "campus", "docente", "instituicao", "disciplina", "beacon"];
     $scope.modelsData = {};
     $scope.modelsDataCreated = {};
+    $scope.createdEvent = { timestampBegin: "2016/12/09 10:00:00", timestampEnd: "2016/12/09 12:00:00" };
     $scope.historic = [];
+    $scope.eventos = [];
     $scope.appName = "QBeaconAdmin";
     
     var loadModels = function() {
@@ -19,10 +21,16 @@ angular.module("qBeaconAdmin").controller("adminController", function($scope, ad
         }).error(function(data, status) {
             console.log("Não foi possível carregar o histórico!");
         });
+        
+        adminService.getAll("evento").success(function(data, status) {
+            $scope.eventos = data;
+        }).error(function(data, status) {
+            console.log("Não foi possível carregar os eventos!");
+        });
     }
 
     var isToUpdate = function(model, object) {
-        return $scope.modelsData[model].some(function(o) {
+        return $scope.modelsData[model] && $scope.modelsData[model].some(function(o) {
             return o.key == object.key;
         });
     }
@@ -56,6 +64,13 @@ angular.module("qBeaconAdmin").controller("adminController", function($scope, ad
             });
         }
     };
+    
+    $scope.saveEvent = function(model, object) {
+        object.timestampBegin = new Date(object.timestampBegin).getTime();
+        object.timestampEnd = new Date(object.timestampEnd).getTime();
+        console.log("Adicionando evento:", JSON.stringify(object));
+        $scope.saveObject(model, object);
+    }
 
     $scope.selectObject = function(model, object) {
         $scope.modelsDataCreated[model] = angular.copy(object);
