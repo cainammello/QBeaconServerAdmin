@@ -2,7 +2,7 @@ angular.module("qBeaconAdmin").controller("adminController", function($scope, ad
     $scope.models = ["bloco", "sala", "campus", "docente", "instituicao", "disciplina", "beacon"];
     $scope.modelsData = {};
     $scope.modelsDataCreated = {};
-    $scope.createdEvent = { timestampBegin: "2016/12/09 10:00:00", timestampEnd: "2016/12/09 12:00:00" };
+    $scope.createdEvent = { };
     $scope.historic = [];
     $scope.eventos = [];
     $scope.appName = "QBeaconAdmin";
@@ -66,9 +66,13 @@ angular.module("qBeaconAdmin").controller("adminController", function($scope, ad
     };
     
     $scope.saveEvent = function(model, object) {
-        object.timestampBegin = new Date(object.timestampBegin).getTime();
-        object.timestampEnd = new Date(object.timestampEnd).getTime();
-        console.log("Adicionando evento:", JSON.stringify(object));
+        object.timestampBegin = Math.round(new Date(object.eventDate + " " + object.eventBeginTime + ":00").getTime());
+        object.timestampEnd = Math.round(new Date(object.eventDate + " " + object.eventEndTime + ":00").getTime());
+
+        delete object.eventDate;
+        delete object.eventBeginTime;
+        delete object.eventEndTime;
+
         $scope.saveObject(model, object);
     }
 

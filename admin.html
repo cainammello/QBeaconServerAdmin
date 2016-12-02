@@ -10,35 +10,8 @@
     <link rel="stylesheet" href="lib/softMaterial/materialize/fonts/icons/material-icons-google.css"/>
     <link rel="stylesheet" href="lib/softMaterial/css/soft.css"/>
     <link rel="stylesheet" href="css/admin.css"/>
-    
-	<script type="text/javascript" src="lib/angular/angular.min.js"></script>
-    <script type="text/javascript" src="lib/angular/angular-locale_pt-br.js"></script>
-    <script type="text/javascript" src="lib/angular/angular-messages.min.js"></script>
-    <script type="text/javascript" src="lib/softMaterial/plugins/jquery/js/jquery-2.0.0.min.js"></script>
-    <script type="text/javascript" src="lib/softMaterial/materialize/js/bin/materialize.min.js"></script>
-    <script type="text/javascript" src="lib/softMaterial/js/soft.js"></script>
+    <link rel="stylesheet" href="node_modules/date-time-picker/dist/date-time-picker.min.css">
 
-    <script type="text/javascript" src="js/app.js"></script>
-
-    <script type="text/javascript" src="js/controllers/adminController.js"></script>
-
-    <script type="text/javascript" src="js/services/adminService.js"></script>
-    
-    <script type="text/javascript" src="js/value/apiValue.js"></script>
-    <script type="text/javascript" src="js/config/serialGeneratorConfig.js"></script>
-
-    <script type="text/javascript" src="js/filter/nameFilter.js"></script>
-    <script type="text/javascript" src="js/filter/ellipsisFilter.js"></script>
-    
-    <script type="text/javascript" src="js/directives/cardItemDirective.js"></script>
-
-	<script type="text/javascript">
-
-        $(document).ready(function() {
-			$('select').material_select();
-        });
-
-	</script>
 	
 </head>
 <body ng-controller="adminController">
@@ -48,23 +21,17 @@
     <div class="ms__main-content ms__main-content-fixed-nav">
         <div class="row">
             <div class="col s10 offset-s1">
-                
-                <div class="card purple">
-                    <div class="card-content">
-                        <a class="btn btn-large purple lighten-2 waves-effect waves-light"
-                            ng-click="updateBeacons()">
-                            <i class="material-icons right">update</i>
-                            Atualizar Beacons
-                        </a>
-                    </div>
-                </div>
-                
+             
                 <div class="card">
                     <div class="card-content">
                         {{createdEvent}}
                     </div>
                     <div class="card-content relative">
                         <div class="row">
+                            <div class="col s12">
+                                <span class="bold text-24 purple-text">Evento</span>
+                            </div>
+                            
                             <div class="col s6" ng-repeat="model in models">
                                 <label>{{model | name}}</label>
                                 <select class="browser-default card-input"
@@ -77,41 +44,80 @@
 
                             </div>
                             
-                            <div class="col s3 input-field">
-                                <input type="text" ng-model="createdEvent.timestampBegin" class="card-input"
-                                placeholder="Começo do evento"/>
+                            <div class="col s6">
+                                <label>Aula Anterior</label>
+                                <select class="browser-default card-input"
+                                    ng-model="createdEvent['keyDisciplinaPrevious']">
+                                    
+                                    <option 
+                                        ng-repeat="object in modelsData['disciplina']" value="{{object.key}}">{{object.name}}
+                                    </option>
+                                </select>
+
                             </div>
                             
-                            <div class="col s3 input-field">
-                                <input type="text" ng-model="createdEvent.timestampEnd" class="card-input"
-                                placeholder="Fim do evento"/>
+                            <div class="col s6">
+                                <label>Aula Anterior</label>
+                                <select class="browser-default card-input"
+                                    ng-model="createdEvent['keyDisciplinaNext']">
+                                    
+                                    <option 
+                                        ng-repeat="object in modelsData['disciplina']" value="{{object.key}}">{{object.name}}
+                                    </option>
+                                </select>
+
                             </div>
+
                         </div>
                         
-                        <button 
-                            ng-disabled="!createdEvent"
-                            ng-click="saveEvent('evento', createdEvent)"
-                            class="btn-floating btn-large bottom-right waves-effect waves-light">
+
+                    </div>
+
+                    <div class="card-action">
+
+                        <div class="row no-margin">
+
+                            <div class="col s4 valign-wrapper">
+                                <input type="text" ng-model="createdEvent.eventDate" placeholder="Data do evento" class="card-input date"/>
+                            </div>
+
+                            <div class="col s4 valign-wrapper">
+                                <input type="text" ng-model="createdEvent.eventBeginTime" placeholder="Horário de início do evento" class="card-input time"/>
+                            </div>
+
+                            <div class="col s4 valign-wrapper">
+                                <input type="text" ng-model="createdEvent.eventEndTime" placeholder="Horário de fim do evento" class="card-input time"/>
+                            </div>
+
+                        </div>
+
+                        <button
+                                ng-disabled="!createdEvent"
+                                ng-click="saveEvent('evento', createdEvent)"
+                                class="btn-floating btn-large bottom-right waves-effect waves-light">
                             <i class="material-icons">check</i>
                         </button>
+
                     </div>
+
                     <div class="card-action grey lighten-3">
-                        <card-item 
-                            class="col s4" ng-repeat="event in modelsData[model] | orderBy:object.key" name="object.name" key="object.key">
+                        <div class="row">
+                            <card-item
+                                class="col s4" ng-repeat="event in eventos | orderBy:event.key">
 
-                            <button 
-                                ng-click="removeObject(model, object)"
-                                class="btn-floating z-depth-1-2 waves-effect waves-light">
-                                <i class="material-icons">delete</i>
-                            </button>
+                                <div ng-repeat="(key, value) in event">
+                                    {{key}}: {{value}}
+                                </div>
 
-                            <button 
-                                ng-click="selectObject(model, object)"
-                                class="btn-floating z-depth-1-2 waves-effect waves-light">
-                                <i class="material-icons">edit</i>
-                            </button>
+                                <button
+                                    ng-click="removeObject('evento', event)"
+                                    class="btn-floating z-depth-1-2 waves-effect waves-light">
+                                    <i class="material-icons">delete</i>
+                                </button>
 
-                        </card-item>
+
+                            </card-item>
+                        </div>
                     </div>
                 </div>
 
@@ -190,6 +196,43 @@
             </div>
         </div>
     </div>
+
+
+
+
+    <script type="text/javascript" src="lib/angular/angular.min.js"></script>
+    <script type="text/javascript" src="lib/angular/angular-locale_pt-br.js"></script>
+    <script type="text/javascript" src="lib/angular/angular-messages.min.js"></script>
+    <script type="text/javascript" src="lib/softMaterial/plugins/jquery/js/jquery-2.0.0.min.js"></script>
+    <script type="text/javascript" src="lib/softMaterial/materialize/js/bin/materialize.min.js"></script>
+    <script type="text/javascript" src="lib/softMaterial/js/soft.js"></script>
+
+    <script type="text/javascript" src="js/app.js"></script>
+
+    <script type="text/javascript" src="js/controllers/adminController.js"></script>
+
+    <script type="text/javascript" src="js/services/adminService.js"></script>
+
+    <script type="text/javascript" src="js/value/apiValue.js"></script>
+
+    <script type="text/javascript" src="js/filter/nameFilter.js"></script>
+    <script type="text/javascript" src="js/filter/ellipsisFilter.js"></script>
+
+    <script type="text/javascript" src="js/directives/cardItemDirective.js"></script>
+
+    <script type="text/javascript" src="node_modules/date-time-picker/dist/date-time-picker.min.js"></script>
+
+    <script type="text/javascript" src="lib/softMaterial/plugins/jquery/mask.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            $('select').material_select();
+        });
+
+    </script>
+
 
 </body>
 </html>

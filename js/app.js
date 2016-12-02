@@ -1,1 +1,3 @@
 angular.module("qBeaconAdmin", ["ngMessages"]);
+
+
