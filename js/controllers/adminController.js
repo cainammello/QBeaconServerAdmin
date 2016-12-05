@@ -69,10 +69,6 @@ angular.module("qBeaconAdmin").controller("adminController", function($scope, ad
         object.timestampBegin = Math.round(new Date(object.eventDate + " " + object.eventBeginTime + ":00").getTime());
         object.timestampEnd = Math.round(new Date(object.eventDate + " " + object.eventEndTime + ":00").getTime());
 
-        delete object.eventDate;
-        delete object.eventBeginTime;
-        delete object.eventEndTime;
-
         $scope.saveObject(model, object);
     }
 
